@@ -308,7 +308,7 @@ class AccountMove(models.Model):
                     box_size=2,
                     border=2,
                 )
-                qr.add_data(rec.ei_qr_data)
+                qr.add_data(rec.ei_qr_link)
                 qr.make(fit=True)
                 img = qr.make_image()
                 temp = BytesIO()

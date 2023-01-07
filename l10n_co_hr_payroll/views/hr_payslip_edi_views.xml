@@ -28,8 +28,8 @@
                     <button string="Confirm" name="action_payslip_done" type="object" states="draft"
                             class="oe_highlight"/>
                     <button name="status_zip" type="object" string="Consult DIAN" groups="base.group_no_one"
-                            attrs="{'invisible': [('state','=','draft')]}"/>
-                    <button string="Refund" name="refund_sheet" states="confirm,done" type='object'/>
+                        attrs="{'invisible': ['|', ('state','=','draft'), ('edi_is_valid', '=', False)]}"/>
+                    <!--<button string="Refund" name="refund_sheet" states="confirm,done" type='object'/>-->
                     <button string="Set to Draft" name="action_payslip_draft" type="object" states="cancel"/>
                     <button string="Compute Sheet" name="compute_sheet" type="object" states="draft"
                             class="oe_highlight"/>
@@ -39,7 +39,7 @@
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                         <button name="dian_preview" type="object" class="oe_stat_button" icon="fa-globe icon"
-                                attrs="{'invisible': [('edi_uuid', '=', False)]}">
+                            attrs="{'invisible': ['|', ('edi_uuid', '=', False), ('edi_is_not_test', '=', True)]}">
                             <div class="o_field_widget o_stat_info">
                                 <span class="o_stat_text">DIAN</span>
                                 <span class="o_stat_text">Web View</span>
@@ -161,6 +161,7 @@
     <menuitem action="action_view_hr_payslip_edi"
               id="menu_payslip_edi_tree"
               name="Edi Payslips"
-              parent="hr_payroll_community.menu_hr_payroll_community_root"
-              groups="hr_payroll_community.group_hr_payroll_community_user"/>
+              sequence="71"
+              parent="hr_work_entry_contract_enterprise.menu_hr_payroll_root"
+              groups="hr_payroll.group_hr_payroll_manager"/>
 </odoo>

@@ -23,12 +23,12 @@
         <field name="name">hr.payslip.form.l10n_co_hr_payroll.inherit</field>
         <field name="model">hr.payslip</field>
         <field name="priority">20</field>
-        <field name="inherit_id" ref="hr_payroll_community.view_hr_payslip_form"/>
+        <field name="inherit_id" ref="hr_payroll.view_hr_payslip_form"/>
         <field name="arch" type="xml">
             <data>
                 <xpath expr="//div[@name='button_box']" position="inside">
                     <button name="dian_preview" type="object" class="oe_stat_button" icon="fa-globe icon"
-                            attrs="{'invisible': [('edi_uuid', '=', False)]}">
+                        attrs="{'invisible': ['|', ('edi_uuid', '=', False), ('edi_is_not_test', '=', False)]}">
                         <div class="o_field_widget o_stat_info">
                             <span class="o_stat_text">DIAN</span>
                             <span class="o_stat_text">Web View</span>
@@ -37,7 +37,7 @@
                 </xpath>
                 <xpath expr="//button[@name='action_payslip_done']" position="after">
                     <button name="status_zip" type="object" string="Consult DIAN" groups="base.group_no_one"
-                            attrs="{'invisible': [('state','=','draft')]}"/>
+                        attrs="{'invisible': ['|', ('state','not in',('done','paid')), ('edi_zip_key', '=', False)]}"/>
                 </xpath>
                 <xpath expr="//field[@name='number']" position="before">
                     <field name="date"/>
@@ -57,7 +57,7 @@
                         <field name="worked_days_total" readonly="True"/>
                     </group>
                 </xpath>
-                <xpath expr="//field[@name='input_line_ids']" position="after">
+                <!--<xpath expr="//field[@name='input_line_ids']" position="after">
                     <separator string="Earn Details"/>
                     <field name="earn_ids">
                         <tree string="Earn Details" editable="bottom">
@@ -240,7 +240,7 @@
                             </group>
                         </form>
                     </field>
-                </xpath>
+                </xpath>-->
                 <xpath expr="//page[last()]" position="after">
                     <page name="edi_response" string="Edi Response">
                         <group>

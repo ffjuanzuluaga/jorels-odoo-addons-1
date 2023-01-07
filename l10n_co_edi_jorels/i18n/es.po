@@ -3230,3 +3230,8 @@ msgstr "la compañía principal"
 #: model_terms:ir.ui.view,arch_db:l10n_co_edi_jorels.report_invoice_document_custom
 msgid "to"
 msgstr "a"
+
+#. module: l10n_co_edi_jorels
+#: model_terms:ir.ui.view,arch_db:l10n_co_edi_jorels.view_l10n_co_edi_jorels_radian_tree
+msgid "Open current form"
+msgstr "Abrir formulario actual"

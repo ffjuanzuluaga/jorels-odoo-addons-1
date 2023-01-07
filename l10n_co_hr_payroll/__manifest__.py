@@ -32,6 +32,8 @@
     'support': 'info@jorels.com',
     'depends': [
         # 'hr_payroll_community',
+        'hr_contract',
+        'hr_payroll'
         'l10n_co_edi_jorels',
     ],
     'data': [
@@ -39,7 +41,7 @@
         'views/hr_contract_views.xml',
         'views/hr_salary_rule_views.xml',
         'views/hr_payslip_views.xml',
-        'views/hr_payslip_edi_views.xml',
+        #'views/hr_payslip_edi_views.xml',
         'views/res_config_settings_views.xml',
         'security/ir.model.access.csv',
         'report/hr_payslip_edi_report.xml',

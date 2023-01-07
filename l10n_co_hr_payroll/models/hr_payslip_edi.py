@@ -699,44 +699,44 @@ class HrPayslipEdi(models.Model):
                 _logger.debug("Failed to process the request: %s", e)
                 raise UserError(_("Failed to process the request: %s") % e)
 
-    def refund_sheet(self):
-        refund_payslip = None
-        for payslip in self:
-            if payslip.credit_note:
-                raise UserError(_("A adjustment note should not be made to a adjustment note"))
+    # def refund_sheet(self):
+    #     refund_payslip = None
+    #     for payslip in self:
+    #         if payslip.credit_note:
+    #             raise UserError(_("A adjustment note should not be made to a adjustment note"))
 
-            refund_payslip = payslip.copy({'credit_note': True,
-                                           'name': _('Refund: ') + payslip.name,
-                                           'origin_payslip_id': payslip.id,
-                                           'number': _('New'),
-                                           })
-            refund_payslip.with_context(without_compute_sheet=True).action_payslip_done()
+    #         refund_payslip = payslip.copy({'credit_note': True,
+    #                                        'name': _('Refund: ') + payslip.name,
+    #                                        'origin_payslip_id': payslip.id,
+    #                                        'number': _('New'),
+    #                                        })
+    #         refund_payslip.with_context(without_compute_sheet=True).action_payslip_done()
 
-            if payslip.edi_payload and not refund_payslip.edi_payload:
-                payload = refund_payslip.get_json_request()
-                refund_payslip.write({'edi_payload': json.dumps(payload, indent=2, sort_keys=False)})
+    #         if payslip.edi_payload and not refund_payslip.edi_payload:
+    #             payload = refund_payslip.get_json_request()
+    #             refund_payslip.write({'edi_payload': json.dumps(payload, indent=2, sort_keys=False)})
 
-        formview_ref = self.env.ref('l10n_co_hr_payroll.view_hr_payslip_edi_form', False)
-        treeview_ref = self.env.ref('l10n_co_hr_payroll.view_hr_payslip_edi_tree', False)
+    #     formview_ref = self.env.ref('l10n_co_hr_payroll.view_hr_payslip_edi_form', False)
+    #     treeview_ref = self.env.ref('l10n_co_hr_payroll.view_hr_payslip_edi_tree', False)
 
-        if refund_payslip is not None:
-            domain = "[('id', 'in', %s)]" % refund_payslip.ids
-        else:
-            domain = "[(credit_note, '=', True)]"
+    #     if refund_payslip is not None:
+    #         domain = "[('id', 'in', %s)]" % refund_payslip.ids
+    #     else:
+    #         domain = "[(credit_note, '=', True)]"
 
-        return {
-            'name': ("Refund Edi Payslip"),
-            'view_mode': 'tree, form',
-            'view_id': False,
-            'view_type': 'form',
-            'res_model': 'hr.payslip.edi',
-            'type': 'ir.actions.act_window',
-            'target': 'current',
-            'domain': domain,
-            'views': [(treeview_ref and treeview_ref.id or False, 'tree'),
-                      (formview_ref and formview_ref.id or False, 'form')],
-            'context': {}
-        }
+    #     return {
+    #         'name': ("Refund Edi Payslip"),
+    #         'view_mode': 'tree, form',
+    #         'view_id': False,
+    #         'view_type': 'form',
+    #         'res_model': 'hr.payslip.edi',
+    #         'type': 'ir.actions.act_window',
+    #         'target': 'current',
+    #         'domain': domain,
+    #         'views': [(treeview_ref and treeview_ref.id or False, 'tree'),
+    #                   (formview_ref and formview_ref.id or False, 'form')],
+    #         'context': {}
+    #     }
 
     # @api.depends('state')
     # def _compute_color(self):

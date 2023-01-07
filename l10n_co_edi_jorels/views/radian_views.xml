@@ -129,7 +129,9 @@
                 <field name="date"/>
                 <field name="company_id" groups="base.group_multi_company"/>
                 <field name="state"/>
-                <button type="object" name="button_open_form_current"
+                <button type="object" 
+                        title="Abrir formulario actual" 
+                        name="button_open_form_current"
                         icon="fa-caret-right icon"/>
             </tree>
         </field>
