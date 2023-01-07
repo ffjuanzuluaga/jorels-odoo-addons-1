@@ -40,7 +40,7 @@ class AccountMove(models.Model):
     _description = "Electronic invoicing"
 
     state = fields.Selection(selection_add=[('validate', 'Validating DIAN')], ondelete={'validate': 'set default'})
-    number_formatted = fields.Char(string="Number formatted", compute="compute_number_formatted", store=False,
+    number_formatted = fields.Char(string="Number formatted", compute="compute_number_formatted", store=True,
                                    copy=False)
 
     ei_type_document_id = fields.Many2one(comodel_name='l10n_co_edi_jorels.type_documents', string="Document type",
@@ -53,14 +53,14 @@ class AccountMove(models.Model):
     ei_sync = fields.Boolean(string="Sync", default=False, copy=False, readonly=True)
     ei_is_not_test = fields.Boolean(string="In production", copy=False, readonly=True,
                                     default=lambda self: self.env.company.is_not_test,
-                                    store=False, compute="_compute_ei_is_not_test")
+                                    store=True, compute="_compute_ei_is_not_test")
 
     # API Response:
     ei_is_valid = fields.Boolean(string="Valid", copy=False, readonly=True, states={'draft': [('readonly', False)]})
     ei_is_restored = fields.Boolean("Is restored?", copy=False, readonly=True)
     ei_algorithm = fields.Char(string="Algorithm", copy=False, readonly=True)
     ei_class = fields.Char("Class", copy=False, readonly=True)
-    ei_number = fields.Char(string="Number", compute="compute_number_formatted", store=False, copy=False, readonly=True)
+    ei_number = fields.Char(string="Number", compute="compute_number_formatted", store=True, copy=False, readonly=True)
     ei_uuid = fields.Char(string="UUID", copy=False, readonly=True, states={'draft': [('readonly', False)]})
     ei_issue_date = fields.Date(string="Issue date", copy=False, readonly=True,
                                 states={'draft': [('readonly', False)]})
@@ -108,7 +108,7 @@ class AccountMove(models.Model):
     ei_qr_image = fields.Binary("QR image", attachment=True, copy=False, readonly=True)
 
     # Total taxes only / without withholdings
-    ei_amount_tax_withholding = fields.Monetary("Withholdings", compute="_compute_amount", store=True)
+    ei_amount_tax_withholding = fields.Monetary("Withholdings", compute="_compute_amount", store=False)
     ei_amount_tax_no_withholding = fields.Monetary("Taxes without withholdings", compute="_compute_amount", store=False)
     ei_amount_total_no_withholding = fields.Monetary("Total without withholdings", compute="_compute_amount",
                                                      store=False)
