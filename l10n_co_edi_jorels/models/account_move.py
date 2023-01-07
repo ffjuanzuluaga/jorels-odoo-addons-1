@@ -119,7 +119,7 @@ class AccountMove(models.Model):
     # Required field for credit and debit notes in DIAN
     ei_correction_concept_id = fields.Many2one(comodel_name='l10n_co_edi_jorels.correction_concepts',
                                                string="Correction concept", copy=False, readonly=False,
-                                               compute="compute_ei_correction_concept_id", store=False,
+                                               compute="compute_ei_correction_concept_id", store=True,
                                                ondelete='RESTRICT')
     ei_correction_concept_credit_id = fields.Many2one(comodel_name='l10n_co_edi_jorels.correction_concepts',
                                                       string="Credit correction concept", copy=False,
@@ -136,7 +136,7 @@ class AccountMove(models.Model):
     value_letters = fields.Char("Value in letters", compute="_compute_amount", store=False)
 
     is_attached_document_matched = fields.Boolean("Correct number in attached document?", copy=False,
-                                                  compute='_is_attached_document_matched', store=False)
+                                                  compute='_is_attached_document_matched', store=True)
     ei_operation = fields.Selection([
         ('aiu', 'AIU'),
         ('standard', 'Standard'),
@@ -174,7 +174,7 @@ class AccountMove(models.Model):
 
     # Payment form
     payment_form_id = fields.Many2one(string="Payment form", comodel_name='l10n_co_edi_jorels.payment_forms',
-                                      copy=True, store=False, compute="_compute_payment_form_id",
+                                      copy=True, store=True, compute="_compute_payment_form_id",
                                       readonly=True, ondelete='RESTRICT')
     payment_method_id = fields.Many2one(string="Payment method", comodel_name='l10n_co_edi_jorels.payment_methods',
                                         default=lambda self: self._default_payment_method_id(), copy=True,
@@ -183,7 +183,7 @@ class AccountMove(models.Model):
 
     # Store resolution
     resolution_id = fields.Many2one(string="Resolution", comodel_name='l10n_co_edi_jorels.resolution', copy=False,
-                                    store=False, compute="_compute_resolution", ondelete='RESTRICT', readonly=True,
+                                    store=True, compute="_compute_resolution", ondelete='RESTRICT', readonly=True,
                                     states={'draft': [('readonly', False)]})
 
     radian_ids = fields.One2many(comodel_name='l10n_co_edi_jorels.radian', inverse_name='move_id')
