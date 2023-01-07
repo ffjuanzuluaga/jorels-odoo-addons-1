@@ -33,7 +33,7 @@
     'depends': [
         # 'hr_payroll_community',
         'hr_contract',
-        'hr_payroll'
+        'hr_payroll',
         'l10n_co_edi_jorels',
     ],
     'data': [
