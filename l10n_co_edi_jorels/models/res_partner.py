@@ -84,7 +84,8 @@ class ResPartner(models.Model):
     def _compute_edi_sanitize_vat(self):
         """Sanitize vat in colombia for document type"""
         for rec in self:
-            rec.edi_sanitize_vat = rec._edi_sanitize_vat(rec.vat, rec.type_document_identification_id.id)
+            if rec.vat:
+                rec.edi_sanitize_vat = rec._edi_sanitize_vat(rec.vat, rec.type_document_identification_id.id)
 
     @api.depends('l10n_latam_identification_type_id')
     def _compute_type_document_identification_id(self):

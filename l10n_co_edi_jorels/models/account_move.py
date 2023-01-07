@@ -40,7 +40,7 @@ class AccountMove(models.Model):
     _description = "Electronic invoicing"
 
     state = fields.Selection(selection_add=[('validate', 'Validating DIAN')], ondelete={'validate': 'set default'})
-    number_formatted = fields.Char(string="Number formatted", compute="compute_number_formatted", store=True,
+    number_formatted = fields.Char(string="Number formatted", compute="compute_number_formatted", store=False,
                                    copy=False)
 
     ei_type_document_id = fields.Many2one(comodel_name='l10n_co_edi_jorels.type_documents', string="Document type",
@@ -53,14 +53,14 @@ class AccountMove(models.Model):
     ei_sync = fields.Boolean(string="Sync", default=False, copy=False, readonly=True)
     ei_is_not_test = fields.Boolean(string="In production", copy=False, readonly=True,
                                     default=lambda self: self.env['res.company']._company_default_get().is_not_test,
-                                    store=True, compute="_compute_ei_is_not_test")
+                                    store=False, compute="_compute_ei_is_not_test")
 
     # API Response:
     ei_is_valid = fields.Boolean(string="Valid", copy=False, readonly=True, states={'draft': [('readonly', False)]})
     ei_is_restored = fields.Boolean("Is restored?", copy=False, readonly=True)
     ei_algorithm = fields.Char(string="Algorithm", copy=False, readonly=True)
     ei_class = fields.Char("Class", copy=False, readonly=True)
-    ei_number = fields.Char(string="Number", compute="compute_number_formatted", store=True, copy=False, readonly=True)
+    ei_number = fields.Char(string="Number", compute="compute_number_formatted", store=False, copy=False, readonly=True)
     ei_uuid = fields.Char(string="UUID", copy=False, readonly=True, states={'draft': [('readonly', False)]})
     ei_issue_date = fields.Date(string="Issue date", copy=False, readonly=True,
                                 states={'draft': [('readonly', False)]})
@@ -108,18 +108,18 @@ class AccountMove(models.Model):
     ei_qr_image = fields.Binary("QR image", attachment=True, copy=False, readonly=True)
 
     # Total taxes only / without withholdings
-    ei_amount_tax_withholding = fields.Monetary("Withholdings", compute="_compute_amount", store=True)
-    ei_amount_tax_no_withholding = fields.Monetary("Taxes without withholdings", compute="_compute_amount", store=True)
+    ei_amount_tax_withholding = fields.Monetary("Withholdings", compute="_compute_amount", store=False)
+    ei_amount_tax_no_withholding = fields.Monetary("Taxes without withholdings", compute="_compute_amount", store=False)
     ei_amount_total_no_withholding = fields.Monetary("Total without withholdings", compute="_compute_amount",
-                                                     store=True)
+                                                     store=False)
 
     # Total base excluding tax
-    ei_amount_excluded = fields.Monetary("Excluded", compute="_compute_amount", store=True)
+    ei_amount_excluded = fields.Monetary("Excluded", compute="_compute_amount", store=False)
 
     # Required field for credit and debit notes in DIAN
     ei_correction_concept_id = fields.Many2one(comodel_name='l10n_co_edi_jorels.correction_concepts',
                                                string="Correction concept", copy=False, readonly=True,
-                                               compute="compute_ei_correction_concept_id", store=True,
+                                               compute="compute_ei_correction_concept_id", store=False,
                                                ondelete='RESTRICT')
     ei_correction_concept_credit_id = fields.Many2one(comodel_name='l10n_co_edi_jorels.correction_concepts',
                                                       string="Credit correction concept", copy=False,
@@ -133,10 +133,10 @@ class AccountMove(models.Model):
     ei_is_correction_without_reference = fields.Boolean("Is it a correction without reference?", default=False,
                                                         readonly=True, states={'draft': [('readonly', False)]})
 
-    value_letters = fields.Char("Value in letters", compute="_compute_amount", store=True)
+    value_letters = fields.Char("Value in letters", compute="_compute_amount", store=False)
 
     is_attached_document_matched = fields.Boolean("Correct number in attached document?", copy=False,
-                                                  compute='_is_attached_document_matched', store=True)
+                                                  compute='_is_attached_document_matched', store=False)
     ei_operation = fields.Selection([
         ('aiu', 'AIU'),
         ('standard', 'Standard'),
@@ -174,7 +174,7 @@ class AccountMove(models.Model):
 
     # Payment form
     payment_form_id = fields.Many2one(string="Payment form", comodel_name='l10n_co_edi_jorels.payment_forms',
-                                      copy=True, store=True, compute="_compute_payment_form_id",
+                                      copy=True, store=False, compute="_compute_payment_form_id",
                                       readonly=True, ondelete='RESTRICT')
     payment_method_id = fields.Many2one(string="Payment method", comodel_name='l10n_co_edi_jorels.payment_methods',
                                         default=lambda self: self._default_payment_method_id(), copy=True,
@@ -183,7 +183,7 @@ class AccountMove(models.Model):
 
     # Store resolution
     resolution_id = fields.Many2one(string="Resolution", comodel_name='l10n_co_edi_jorels.resolution', copy=False,
-                                    store=True, compute="_compute_resolution", ondelete='RESTRICT', readonly=True,
+                                    store=False, compute="_compute_resolution", ondelete='RESTRICT', readonly=True,
                                     states={'draft': [('readonly', False)]})
 
     radian_ids = fields.One2many(comodel_name='l10n_co_edi_jorels.radian', inverse_name='move_id')
