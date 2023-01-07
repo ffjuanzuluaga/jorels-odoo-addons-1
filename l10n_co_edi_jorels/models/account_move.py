@@ -53,7 +53,7 @@ class AccountMove(models.Model):
     ei_sync = fields.Boolean(string="Sync", default=False, copy=False, readonly=True)
     ei_is_not_test = fields.Boolean(string="In production", copy=False, readonly=True,
                                     default=lambda self: self.env.company.is_not_test,
-                                    store=True, compute="_compute_ei_is_not_test")
+                                    store=False, compute="_compute_ei_is_not_test")
 
     # API Response:
     ei_is_valid = fields.Boolean(string="Valid", copy=False, readonly=True, states={'draft': [('readonly', False)]})
@@ -109,7 +109,7 @@ class AccountMove(models.Model):
 
     # Total taxes only / without withholdings
     ei_amount_tax_withholding = fields.Monetary("Withholdings", compute="_compute_amount", store=True)
-    ei_amount_tax_no_withholding = fields.Monetary("Taxes without withholdings", compute="_compute_amount", store=True)
+    ei_amount_tax_no_withholding = fields.Monetary("Taxes without withholdings", compute="_compute_amount", store=False)
     ei_amount_total_no_withholding = fields.Monetary("Total without withholdings", compute="_compute_amount",
                                                      store=False)
 
@@ -118,7 +118,7 @@ class AccountMove(models.Model):
 
     # Required field for credit and debit notes in DIAN
     ei_correction_concept_id = fields.Many2one(comodel_name='l10n_co_edi_jorels.correction_concepts',
-                                               string="Correction concept", copy=False, readonly=True,
+                                               string="Correction concept", copy=False, readonly=False,
                                                compute="compute_ei_correction_concept_id", store=False,
                                                ondelete='RESTRICT')
     ei_correction_concept_credit_id = fields.Many2one(comodel_name='l10n_co_edi_jorels.correction_concepts',
