@@ -53,7 +53,7 @@ class AccountMove(models.Model):
     ei_sync = fields.Boolean(string="Sync", default=False, copy=False, readonly=True)
     ei_is_not_test = fields.Boolean(string="In production", copy=False, readonly=True,
                                     default=lambda self: self.env.company.is_not_test,
-                                    store=True, compute="_compute_ei_is_not_test")
+                                    store=False, compute="_compute_ei_is_not_test")
 
     # API Response:
     ei_is_valid = fields.Boolean(string="Valid", copy=False, readonly=True, states={'draft': [('readonly', False)]})
@@ -136,7 +136,7 @@ class AccountMove(models.Model):
     value_letters = fields.Char("Value in letters", compute="_compute_amount", store=True)
 
     is_attached_document_matched = fields.Boolean("Correct number in attached document?", copy=False,
-                                                  compute='_is_attached_document_matched', store=True)
+                                                  compute='_is_attached_document_matched', store=False)
     ei_operation = fields.Selection([
         ('aiu', 'AIU'),
         ('standard', 'Standard'),
@@ -174,7 +174,7 @@ class AccountMove(models.Model):
 
     # Payment form
     payment_form_id = fields.Many2one(string="Payment form", comodel_name='l10n_co_edi_jorels.payment_forms',
-                                      copy=True, store=True, compute="_compute_payment_form_id",
+                                      copy=True, store=False, compute="_compute_payment_form_id",
                                       readonly=True, ondelete='RESTRICT')
     payment_method_id = fields.Many2one(string="Payment method", comodel_name='l10n_co_edi_jorels.payment_methods',
                                         default=lambda self: self._default_payment_method_id(), copy=True,
@@ -183,7 +183,7 @@ class AccountMove(models.Model):
 
     # Store resolution
     resolution_id = fields.Many2one(string="Resolution", comodel_name='l10n_co_edi_jorels.resolution', copy=False,
-                                    store=True, compute="_compute_resolution", ondelete='RESTRICT', readonly=True,
+                                    store=False, compute="_compute_resolution", ondelete='RESTRICT', readonly=True,
                                     states={'draft': [('readonly', False)]})
 
     radian_ids = fields.One2many(comodel_name='l10n_co_edi_jorels.radian', inverse_name='move_id')
