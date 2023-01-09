@@ -1,24 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    l10n_co_edi_jorels
-    Copyright (C) 2022  Jorels SAS
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Affero General Public License for more details.
-
-    You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
-    email: info@jorels.com
- -->
-
 <odoo>
     <data>
         <record id="res_config_settings_view_form" model="ir.ui.view">
@@ -37,14 +17,10 @@
                             <div class="col-12 col-lg-6 o_setting_box">
                                 <div class="o_setting_left_pane"/>
                                 <div class="o_setting_right_pane">
-                                    <span class="o_form_label">Put here your API Key</span>
-                                    <div class="text-muted">If you don't have one, write to
-                                        <a href="mailto:info@jorels.com">info@jorels.com</a>
-                                    </div>
                                     <div class="content-group">
-                                        <div class="row mt16">
-                                            <label for="api_key" class="col-lg-3 o_light_label"/>
-                                            <field name="api_key" password="True"/>
+                                        <div class="row mt16" id="api_key_edi">
+                                            <label for="api_key" class="col-lg-3 o_light_label" invisible='1'/>
+                                            <field name="api_key" password="True" invisible='1'/>
                                         </div>
                                     </div>
                                 </div>
