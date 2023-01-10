@@ -59,7 +59,7 @@
         'views/mail_message_views.xml',
         'views/account_move_reversal_view.xml',
         'views/radian_views.xml',
-        'report/report_invoice.xml',
+        #'report/report_invoice.xml',
         'data/mail_template_data.xml',
     ],
     'external_dependencies': {
