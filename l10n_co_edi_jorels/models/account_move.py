@@ -645,70 +645,61 @@ class AccountMove(models.Model):
             amount_tax_withholding = 0
             amount_tax_no_withholding = 0
             amount_excluded = 0
-
-            if str(rec.create_date) >= '09/01/2023':
-
-                for invoice_line_id in rec.invoice_line_ids:
-                    if invoice_line_id.account_id:
-                        taxable_amount = invoice_line_id.price_subtotal
-                        for invoice_line_tax_id in invoice_line_id.tax_ids:
-                            if invoice_line_tax_id.edi_tax_id.id:
-                                edi_tax_name = invoice_line_tax_id.edi_tax_id.name
-                                tax_name = invoice_line_tax_id.name
-                                tax_amount = taxable_amount * invoice_line_tax_id.amount / 100.0
-                                if tax_name in ('IVA Excluido', 'IVA Compra Excluido'):
-                                    amount_excluded = amount_excluded + taxable_amount
-                                elif edi_tax_name[:4] == 'Rete':
-                                    amount_tax_withholding = amount_tax_withholding + tax_amount
-                                else:
-                                    amount_tax_no_withholding = amount_tax_no_withholding + tax_amount
+            
+            for invoice_line_id in rec.invoice_line_ids:
+                if invoice_line_id.account_id:
+                    taxable_amount = invoice_line_id.price_subtotal
+                    for invoice_line_tax_id in invoice_line_id.tax_ids:
+                        if invoice_line_tax_id.edi_tax_id.id:
+                            edi_tax_name = invoice_line_tax_id.edi_tax_id.name
+                            tax_name = invoice_line_tax_id.name
+                            tax_amount = taxable_amount * invoice_line_tax_id.amount / 100.0
+                            if tax_name in ('IVA Excluido', 'IVA Compra Excluido'):
+                                amount_excluded = amount_excluded + taxable_amount
+                            elif edi_tax_name[:4] == 'Rete':
+                                amount_tax_withholding = amount_tax_withholding + tax_amount
                             else:
-                                tax_name = invoice_line_tax_id.name
-                                tax_amount = taxable_amount * invoice_line_tax_id.amount / 100.0
-                                if tax_name in ('IVA Excluido', 'IVA Compra Excluido'):
-                                    amount_excluded = amount_excluded + taxable_amount
-                                elif tax_name[:3] == 'Rte':
-                                    amount_tax_withholding = amount_tax_withholding + tax_amount
-                                else:
-                                    amount_tax_no_withholding = amount_tax_no_withholding + tax_amount
+                                amount_tax_no_withholding = amount_tax_no_withholding + tax_amount
+                        else:
+                            tax_name = invoice_line_tax_id.name
+                            tax_amount = taxable_amount * invoice_line_tax_id.amount / 100.0
+                            if tax_name in ('IVA Excluido', 'IVA Compra Excluido'):
+                                amount_excluded = amount_excluded + taxable_amount
+                            elif tax_name[:3] == 'Rte':
+                                amount_tax_withholding = amount_tax_withholding + tax_amount
+                            else:
+                                amount_tax_no_withholding = amount_tax_no_withholding + tax_amount
 
-                        rec.ei_amount_tax_withholding = amount_tax_withholding
-                        rec.ei_amount_tax_no_withholding = amount_tax_no_withholding
-                        rec.ei_amount_total_no_withholding = rec.amount_untaxed + rec.ei_amount_tax_no_withholding
-                        rec.ei_amount_excluded = amount_excluded
+                    rec.ei_amount_tax_withholding = amount_tax_withholding
+                    rec.ei_amount_tax_no_withholding = amount_tax_no_withholding
+                    rec.ei_amount_total_no_withholding = rec.amount_untaxed + rec.ei_amount_tax_no_withholding
+                    rec.ei_amount_excluded = amount_excluded
 
-                        if self.is_universal_discount():
-                            if not ('ks_global_tax_rate' in rec):
-                                rec.ks_calculate_discount()
-                            sign = rec.move_type in ['in_refund', 'out_refund'] and -1 or 1
-                            rec.amount_residual_signed = rec.amount_total * sign
-                            rec.amount_total_signed = rec.amount_total * sign
+                    if self.is_universal_discount():
+                        if not ('ks_global_tax_rate' in rec):
+                            rec.ks_calculate_discount()
+                        sign = rec.move_type in ['in_refund', 'out_refund'] and -1 or 1
+                        rec.amount_residual_signed = rec.amount_total * sign
+                        rec.amount_total_signed = rec.amount_total * sign
 
-                            rec.ei_amount_total_no_withholding = rec.amount_untaxed + \
-                                                                rec.ei_amount_tax_no_withholding - \
-                                                                rec.ks_amount_discount
+                        rec.ei_amount_total_no_withholding = rec.amount_untaxed + \
+                                                             rec.ei_amount_tax_no_withholding - \
+                                                             rec.ks_amount_discount
 
-                        # Value in letters
-                        decimal_part, integer_part = math.modf(rec.amount_total)
+                    # Value in letters
+                    decimal_part, integer_part = math.modf(rec.amount_total)
+                    if decimal_part:
+                        decimal_part = round(decimal_part * math.pow(10, rec.currency_id.decimal_places))
+                    if integer_part:
+                        lang = rec.partner_id.lang if rec.partner_id.lang else 'es_CO'
+
+                        rec.value_letters = num2words(integer_part, lang=lang).upper() + ' ' + \
+                                            rec.currency_id.currency_unit_label.upper()
+
                         if decimal_part:
-                            decimal_part = round(decimal_part * math.pow(10, rec.currency_id.decimal_places))
-                        if integer_part:
-                            lang = rec.partner_id.lang if rec.partner_id.lang else 'es_CO'
-
-                            rec.value_letters = num2words(integer_part, lang=lang).upper() + ' ' + \
-                                                rec.currency_id.currency_unit_label.upper()
-
-                            if decimal_part:
-                                rec.value_letters = rec.value_letters + ', ' + \
-                                                    num2words(decimal_part, lang=lang).upper() + ' ' + \
-                                                    rec.currency_id.currency_subunit_label.upper() + '.'
-            else:
-                rec.ei_amount_tax_withholding = amount_tax_withholding
-                rec.ei_amount_tax_no_withholding = amount_tax_no_withholding
-                rec.ei_amount_total_no_withholding = rec.amount_untaxed + rec.ei_amount_tax_no_withholding
-                rec.ei_amount_excluded = amount_excluded
-                rec.value_letters = ''
-
+                            rec.value_letters = rec.value_letters + ', ' + \
+                                                num2words(decimal_part, lang=lang).upper() + ' ' + \
+                                                rec.currency_id.currency_subunit_label.upper() + '.'
         return res
 
     def get_ei_payment_form(self):
