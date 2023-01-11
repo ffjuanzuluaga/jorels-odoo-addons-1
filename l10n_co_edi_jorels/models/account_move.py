@@ -108,13 +108,13 @@ class AccountMove(models.Model):
     ei_qr_image = fields.Binary("QR image", attachment=True, copy=False, readonly=True)
 
     # Total taxes only / without withholdings
-    ei_amount_tax_withholding = fields.Monetary("Withholdings", compute="_compute_amount", store=False)
-    ei_amount_tax_no_withholding = fields.Monetary("Taxes without withholdings", compute="_compute_amount", store=False)
+    ei_amount_tax_withholding = fields.Monetary("Withholdings", compute="_compute_amount", store=True)
+    ei_amount_tax_no_withholding = fields.Monetary("Taxes without withholdings", compute="_compute_amount", store=True)
     ei_amount_total_no_withholding = fields.Monetary("Total without withholdings", compute="_compute_amount",
-                                                     store=False)
+                                                     store=True)
 
     # Total base excluding tax
-    ei_amount_excluded = fields.Monetary("Excluded", compute="_compute_amount", store=False)
+    ei_amount_excluded = fields.Monetary("Excluded", compute="_compute_amount", store=True)
 
     # Required field for credit and debit notes in DIAN
     ei_correction_concept_id = fields.Many2one(comodel_name='l10n_co_edi_jorels.correction_concepts',
@@ -133,7 +133,7 @@ class AccountMove(models.Model):
     ei_is_correction_without_reference = fields.Boolean("Is it a correction without reference?", default=False,
                                                         readonly=True, states={'draft': [('readonly', False)]})
 
-    value_letters = fields.Char("Value in letters", compute="_compute_amount", store=False)
+    value_letters = fields.Char("Value in letters", compute="_compute_amount", store=True)
 
     is_attached_document_matched = fields.Boolean("Correct number in attached document?", copy=False,
                                                   compute='_is_attached_document_matched', store=True)
