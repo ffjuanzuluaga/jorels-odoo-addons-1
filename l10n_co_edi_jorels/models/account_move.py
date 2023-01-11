@@ -646,7 +646,7 @@ class AccountMove(models.Model):
             amount_tax_no_withholding = 0
             amount_excluded = 0
 
-            if rec.create_date >= '09/01/2023':
+            if str(rec.create_date) >= '09/01/2023':
 
                 for invoice_line_id in rec.invoice_line_ids:
                     if invoice_line_id.account_id:
