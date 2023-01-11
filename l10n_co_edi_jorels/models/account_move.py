@@ -112,7 +112,6 @@ class AccountMove(models.Model):
     ei_amount_tax_no_withholding = fields.Monetary("Taxes without withholdings", compute="_compute_amount", store=True)
     ei_amount_total_no_withholding = fields.Monetary("Total without withholdings", compute="_compute_amount",
                                                      store=True)
-
     # Total base excluding tax
     ei_amount_excluded = fields.Monetary("Excluded", compute="_compute_amount", store=True)
 
