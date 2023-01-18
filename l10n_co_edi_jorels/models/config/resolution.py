@@ -57,10 +57,17 @@ class Resolution(models.Model):
 
     resolution_message = fields.Char(string="Message", readonly=True)
 
+    company_id = fields.Many2one('res.company', string='Company', readonly=False, copy=False, required=True,
+                                 default=lambda self: self.env.company)
+
     def _compute_name(self):
         for rec in self:
-            rec.name = str(rec.resolution_id) + ' - ' + \
-                       rec.resolution_type_document_id.name + ' [' + rec.resolution_type_document_id.code + ']'
+            if rec.resolution_id:
+                rec.name = str(rec.resolution_id) + ' - ' + \
+                           rec.resolution_type_document_id.name + \
+                           ' [' + rec.resolution_type_document_id.code + ']'
+            else:
+                rec.name = rec.resolution_type_document_id.name
 
     @api.model
     def create(self, vals):
@@ -182,25 +189,26 @@ class Resolution(models.Model):
 
                 len_prefix = len('resolution_')
                 for val in vals:
-                    requests_data[val[len_prefix:]] = vals[val]
+                    if val != 'company_id':
+                        requests_data[val[len_prefix:]] = vals[val]
 
                 if not requests_data['prefix']:
-                    requests_data['prefix'] = ''
+                    requests_data.pop('prefix')
 
                 if not requests_data['resolution']:
-                    requests_data['resolution'] = ''
+                    requests_data.pop('resolution')
 
                 if not requests_data['resolution_date']:
-                    requests_data['resolution_date'] = ''
+                    requests_data.pop('resolution_date')
 
                 if not requests_data['technical_key']:
-                    requests_data['technical_key'] = ''
+                    requests_data.pop('technical_key')
 
                 if not requests_data['date_from']:
-                    requests_data['date_from'] = ''
+                    requests_data.pop('date_from')
 
                 if not requests_data['date_to']:
-                    requests_data['date_to'] = ''
+                    requests_data.pop('date_to')
 
                 _logger.debug("Request update resolution DIAN: %s",
                               json.dumps(requests_data, indent=2, sort_keys=False))
