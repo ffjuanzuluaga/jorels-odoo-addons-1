@@ -65,14 +65,10 @@ class Radian(models.Model):
 
     # Storing synchronous and production modes
     edi_sync = fields.Boolean(string="Sync", copy=False, readonly=True,
-                              default=lambda self: self.env[
-                                  'res.company'
-                              ]._company_default_get().is_not_test, store=True,
+                              default=lambda self: self.env.company.is_not_test, store=True,
                               compute="_compute_edi_is_not_test")
     edi_is_not_test = fields.Boolean(string="In production", copy=False, readonly=True,
-                                     default=lambda self: self.env[
-                                         'res.company'
-                                     ]._company_default_get().is_not_test, store=True,
+                                     default=lambda self: self.env.company.is_not_test, store=True,
                                      compute="_compute_edi_is_not_test")
 
     # Edi response fields
