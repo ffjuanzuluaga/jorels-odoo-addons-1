@@ -1505,24 +1505,24 @@ class HrPayslip(models.Model):
                 _logger.debug("Failed to process the request: %s", e)
                 raise UserError(_("Failed to process the request: %s") % e)
 
-    def action_payslip_done(self):
-        for rec in self:
-            if not rec.number or rec.number in ('New', _('New')):
-                if rec.credit_note:
-                    rec.number = self.env['ir.sequence'].next_by_code('salary.slip.note')
-                    if not rec.number:
-                        raise UserError(
-                            _("You must create a sequence for adjusment notes with code 'salary.slip.note'"))
-                else:
-                    rec.number = self.env['ir.sequence'].next_by_code('salary.slip')
+    # def action_payslip_done(self):
+    #     for rec in self:
+    #         if not rec.number or rec.number in ('New', _('New')):
+    #             if rec.credit_note:
+    #                 rec.number = self.env['ir.sequence'].next_by_code('salary.slip.note')
+    #                 if not rec.number:
+    #                     raise UserError(
+    #                         _("You must create a sequence for adjusment notes with code 'salary.slip.note'"))
+    #             else:
+    #                 rec.number = self.env['ir.sequence'].next_by_code('salary.slip')
 
-        res = super(HrPayslip, self).action_payslip_done()
+    #     res = super(HrPayslip, self).action_payslip_done()
 
-        for rec in self:
-            if rec.company_id.edi_payroll_enable and not rec.company_id.edi_payroll_consolidated_enable:
-                rec.validate_dian_generic()
+    #     for rec in self:
+    #         if rec.company_id.edi_payroll_enable and not rec.company_id.edi_payroll_consolidated_enable:
+    #             rec.validate_dian_generic()
 
-        return res
+    #     return res
 
     def status_zip(self):
         for rec in self:
