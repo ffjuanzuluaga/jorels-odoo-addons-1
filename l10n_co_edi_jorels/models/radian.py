@@ -1,23 +1,23 @@
 # -*- coding: utf-8 -*-
 #
-#   Jorels S.A.S. - Copyright (C) 2019-2023
+# Jorels S.A.S. - Copyright (2019-2022)
 #
-#   This file is part of l10n_co_edi_jorels.
+# This file is part of l10n_co_edi_jorels.
 #
-#   This program is free software: you can redistribute it and/or modify
-#   it under the terms of the GNU Lesser General Public License as published by
-#   the Free Software Foundation, either version 3 of the License, or
-#   (at your option) any later version.
+# l10n_co_edi_jorels is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 #
-#   This program is distributed in the hope that it will be useful,
-#   but WITHOUT ANY WARRANTY; without even the implied warranty of
-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#   GNU Lesser General Public License for more details.
+# l10n_co_edi_jorels is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
 #
-#   You should have received a copy of the GNU Lesser General Public License
-#   along with this program. If not, see <https://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU Lesser General Public License
+# along with l10n_co_edi_jorels.  If not, see <https://www.gnu.org/licenses/>.
 #
-#   email: info@jorels.com
+# email: info@jorels.com
 #
 
 import json
@@ -76,9 +76,9 @@ class Radian(models.Model):
     edi_is_restored = fields.Boolean("Is restored?", copy=False, readonly=True)
     edi_algorithm = fields.Char("Algorithm", copy=False, readonly=True)
     edi_class = fields.Char("Class", copy=False, readonly=True)
-    edi_number = fields.Char("Number", copy=False, readonly=True)
+    edi_number = fields.Char("Edi number", copy=False, readonly=True)
     edi_uuid = fields.Char("UUID", copy=False, readonly=True, states={'draft': [('readonly', False)]})
-    edi_issue_date = fields.Date("Date", copy=False, readonly=True, states={'draft': [('readonly', False)]})
+    edi_issue_date = fields.Date("Issue date", copy=False, readonly=True, states={'draft': [('readonly', False)]})
     edi_expedition_date = fields.Char("Expedition date", copy=False, readonly=True)
     edi_zip_key = fields.Char("Zip key", copy=False, readonly=True, states={'draft': [('readonly', False)]})
     edi_status_code = fields.Char("Status code", copy=False, readonly=True)
@@ -216,6 +216,9 @@ class Radian(models.Model):
 
     def action_post(self):
         for rec in self:
+            if rec.state != 'draft':
+                continue
+
             if rec.type == 'customer' and rec.move_id.move_type not in ('out_invoice', 'out_refund'):
                 raise UserError(_("The invoice must be a sales invoice"))
             if rec.type == 'supplier' and rec.move_id.move_type not in ('in_invoice', 'in_refund'):
@@ -317,6 +320,10 @@ class Radian(models.Model):
 
     def validate_dian(self):
         for rec in self:
+            if rec.state != 'posted':
+                continue
+
+            # TODO: Validate in order, to avoid conflicts
             if rec.company_id.ei_enable and not rec.edi_is_valid and (
                     (rec.type == 'supplier' and rec.event_id.code in ('030', '031', '032', '033')) or \
                     (rec.type == 'customer' and rec.event_id.code == '034')
@@ -414,11 +421,12 @@ class Radian(models.Model):
                 else:
                     raise UserError(_("No logical response was obtained from the API."))
             except Exception as e:
-                _logger.debug("Failed to process the request: %s", e)
+                _logger.debug("Failed to process the request for document: %s: %s", (rec.name, e))
                 if not rec.company_id.ei_always_validate:
-                    raise UserError(_("Failed to process the request: %s") % e)
+                    raise UserError(_("Failed to process the request for document: %s: %s") % (rec.name, e))
                 else:
-                    rec.message_post(body=_("DIAN Electronic invoicing: Failed to process the request: %s") % e)
+                    rec.message_post(body=_("DIAN Electronic invoicing: "
+                                            "Failed to process the request for document: %s: %s") % (rec.name, e))
 
     def status_zip(self):
         for rec in self:

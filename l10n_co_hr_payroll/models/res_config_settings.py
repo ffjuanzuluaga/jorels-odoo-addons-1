@@ -1,21 +1,20 @@
 # -*- coding: utf-8 -*-
 #
-#   Jorels S.A.S. - Copyright (C) 2019-2023
-#
-#   This file is part of l10n_co_hr_payroll.
+#   l10n_co_hr_payroll
+#   Copyright (C) 2022  Jorels SAS
 #
 #   This program is free software: you can redistribute it and/or modify
-#   it under the terms of the GNU Lesser General Public License as published by
-#   the Free Software Foundation, either version 3 of the License, or
+#   it under the terms of the GNU Affero General Public License as published
+#   by the Free Software Foundation, either version 3 of the License, or
 #   (at your option) any later version.
 #
 #   This program is distributed in the hope that it will be useful,
 #   but WITHOUT ANY WARRANTY; without even the implied warranty of
 #   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#   GNU Lesser General Public License for more details.
+#   GNU Affero General Public License for more details.
 #
-#   You should have received a copy of the GNU Lesser General Public License
-#   along with this program. If not, see <https://www.gnu.org/licenses/>.
+#   You should have received a copy of the GNU Affero General Public License
+#   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 #   email: info@jorels.com
 #
@@ -96,10 +95,20 @@ class ResConfigSettings(models.TransientModel):
                                                      string="Enable consolidated electronic payroll for this company",
                                                      default=False, readonly=False)
 
+    # DIAN validation
+    edi_payroll_always_validate = fields.Boolean(related="company_id.edi_payroll_always_validate",
+                                                 string="Always validate payslips",
+                                                 default=False, readonly=False)
+    edi_payroll_enable_validate_state = fields.Boolean(related="company_id.edi_payroll_enable_validate_state",
+                                                       string="Enable intermediate 'DIAN Validation' state for payroll",
+                                                       default=False, readonly=False)
+
     @api.model
     def get_values(self):
         res = super(ResConfigSettings, self).get_values()
         res['edi_payroll_is_not_test'] = self.env.company.edi_payroll_is_not_test
         res['edi_payroll_enable'] = self.env.company.edi_payroll_enable
         res['edi_payroll_consolidated_enable'] = self.env.company.edi_payroll_consolidated_enable
+        res['edi_payroll_always_validate'] = self.env.company.edi_payroll_always_validate
+        res['edi_payroll_enable_validate_state'] = self.env.company.edi_payroll_enable_validate_state
         return res

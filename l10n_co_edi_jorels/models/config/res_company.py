@@ -1,23 +1,23 @@
 # -*- coding: utf-8 -*-
 #
-#   Jorels S.A.S. - Copyright (C) 2019-2023
+# Jorels S.A.S. - Copyright (2019-2022)
 #
-#   This file is part of l10n_co_edi_jorels.
+# This file is part of l10n_co_edi_jorels.
 #
-#   This program is free software: you can redistribute it and/or modify
-#   it under the terms of the GNU Lesser General Public License as published by
-#   the Free Software Foundation, either version 3 of the License, or
-#   (at your option) any later version.
+# l10n_co_edi_jorels is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 #
-#   This program is distributed in the hope that it will be useful,
-#   but WITHOUT ANY WARRANTY; without even the implied warranty of
-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#   GNU Lesser General Public License for more details.
+# l10n_co_edi_jorels is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
 #
-#   You should have received a copy of the GNU Lesser General Public License
-#   along with this program. If not, see <https://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU Lesser General Public License
+# along with l10n_co_edi_jorels.  If not, see <https://www.gnu.org/licenses/>.
 #
-#   email: info@jorels.com
+# email: info@jorels.com
 #
 
 import json
@@ -69,7 +69,7 @@ class ResCompany(models.Model):
     # email -> email
 
     # Api key
-    api_key = fields.Char(string="Api key")
+    api_key = fields.Char(string="Edipo api key")
 
     ei_always_validate = fields.Boolean(string="Always validate invoices", default=False)
 
@@ -93,6 +93,9 @@ class ResCompany(models.Model):
 
     # Ignore email edi
     ei_ignore_edi_email_check = fields.Boolean(string="Ignore edi email check", default=False)
+
+    # Nimbus api key
+    nimbus_api_key = fields.Char(string="Nimbus api key")
 
     def _compute_vat_formatted(self):
         for rec in self:
@@ -271,6 +274,7 @@ class ResCompany(models.Model):
                 if 'message' in response:
                     # rec.env.user.notify_info(message=response['message'])
                     _logger.debug(response['message'])
+
             except Exception as e:
                 _logger.debug("Communication error: %s", e)
 
@@ -285,3 +289,10 @@ class ResCompany(models.Model):
                         vals['is_not_test'] = not vals['is_not_test']
 
         return super(ResCompany, self).write(vals)
+
+    def uninstall_custom_models(self, module):
+        cr = self._cr
+        if module == 'l10n_co_edi_jorels':
+            cr.execute(
+                "DELETE FROM ir_model_data WHERE module = 'l10n_co_edi_jorels' and name like '%customer_software%'")
+            cr.execute("DELETE FROM ir_model WHERE model = 'l10n_co_edi_jorels.customer_software'")

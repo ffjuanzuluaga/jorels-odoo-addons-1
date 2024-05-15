@@ -1,23 +1,23 @@
 # -*- coding: utf-8 -*-
 #
-#   Jorels S.A.S. - Copyright (C) 2019-2023
+# Jorels S.A.S. - Copyright (2019-2022)
 #
-#   This file is part of l10n_co_edi_jorels.
+# This file is part of l10n_co_edi_jorels.
 #
-#   This program is free software: you can redistribute it and/or modify
-#   it under the terms of the GNU Lesser General Public License as published by
-#   the Free Software Foundation, either version 3 of the License, or
-#   (at your option) any later version.
+# l10n_co_edi_jorels is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 #
-#   This program is distributed in the hope that it will be useful,
-#   but WITHOUT ANY WARRANTY; without even the implied warranty of
-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#   GNU Lesser General Public License for more details.
+# l10n_co_edi_jorels is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
 #
-#   You should have received a copy of the GNU Lesser General Public License
-#   along with this program. If not, see <https://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU Lesser General Public License
+# along with l10n_co_edi_jorels.  If not, see <https://www.gnu.org/licenses/>.
 #
-#   email: info@jorels.com
+# email: info@jorels.com
 #
 
 {
@@ -27,10 +27,12 @@
     'author': "Jorels SAS",
     'license': "LGPL-3",
     'category': 'Invoicing & Payments',
-    'version': '16.0.23.03.24.13.08',
+    'version': '16.0.24.05.010000',
     'website': "https://www.jorels.com",
     'images': ['static/images/main_screenshot.png'],
     'support': 'info@jorels.com',
+
+    # Odoo, OCA and Jorels dependencies
     'depends': [
         'account',
         'l10n_co',
@@ -50,7 +52,6 @@
         'views/config/resolution_views.xml',
         'views/config/uom_uom_views.xml',
         'views/config/account_taxes_view.xml',
-        'views/config/customer_software_views.xml',
         'views/config/account_journal_views.xml',
         'views/config/product_template_views.xml',
         'views/account_move_view.xml',
@@ -58,13 +59,13 @@
         'views/mail_message_views.xml',
         'views/account_move_reversal_view.xml',
         'views/radian_views.xml',
+        'views/listings/l10n_co_edi_jorels_taxes_view.xml',
         'report/report_invoice.xml',
         'data/mail_template_data.xml',
     ],
     'external_dependencies': {
         'python': [
             'num2words',
-            'pathlib',
             'qrcode',
             'requests',
         ]

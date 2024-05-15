@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--Jorels S.A.S. - Copyright (C) 2019-2023-->
+
+<!--Jorels S.A.S. - Copyright (2019-2022)-->
 
 <!--This file is part of l10n_co_edi_jorels.-->
 
-<!--This program is free software: you can redistribute it and/or modify-->
+<!--l10n_co_edi_jorels is free software: you can redistribute it and/or modify-->
 <!--it under the terms of the GNU Lesser General Public License as published by-->
 <!--the Free Software Foundation, either version 3 of the License, or-->
 <!--(at your option) any later version.-->
 
-<!--This program is distributed in the hope that it will be useful,-->
+<!--l10n_co_edi_jorels is distributed in the hope that it will be useful,-->
 <!--but WITHOUT ANY WARRANTY; without even the implied warranty of-->
 <!--MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the-->
 <!--GNU Lesser General Public License for more details.-->
 
 <!--You should have received a copy of the GNU Lesser General Public License-->
-<!--along with this program. If not, see <https://www.gnu.org/licenses/>.-->
+<!--along with l10n_co_edi_jorels.  If not, see <https://www.gnu.org/licenses/>.-->
 
 <!--email: info@jorels.com-->
 
@@ -36,14 +37,31 @@
                             <div class="col-12 col-lg-6 o_setting_box">
                                 <div class="o_setting_left_pane"/>
                                 <div class="o_setting_right_pane">
-                                    <span class="o_form_label">Put here your API Key</span>
-                                    <div class="text-muted">If you don't have one, write to
+                                    <span class="o_form_label">Put here your Edipo API Key</span>
+                                    <div class="text-muted">Send EDI documents with Jorels through Edipo.
+                                        If you don't have a Edipo api key, please write to
                                         <a href="mailto:info@jorels.com">info@jorels.com</a>
                                     </div>
                                     <div class="content-group">
                                         <div class="row mt16">
                                             <label for="api_key" class="col-lg-3 o_light_label"/>
                                             <field name="api_key" password="True"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane"/>
+                                <div class="o_setting_right_pane">
+                                    <span class="o_form_label">Put here your Nimbus API Key</span>
+                                    <div class="text-muted">Receive EDI documents with Jorels through Nimbus.
+                                        If you don't have a Nimbus api key, please write to
+                                        <a href="mailto:info@jorels.com">info@jorels.com</a>
+                                    </div>
+                                    <div class="content-group">
+                                        <div class="row mt16">
+                                            <label for="nimbus_api_key" class="col-lg-3 o_light_label"/>
+                                            <field name="nimbus_api_key" password="True"/>
                                         </div>
                                     </div>
                                 </div>
@@ -59,7 +77,7 @@
                             </div>
                         </div>
 
-                        <h2>Test Environment</h2>
+                        <h2>Environment</h2>
                         <div class="row mt16 o_settings_container">
                             <div class="col-12 col-lg-6 o_setting_box">
                                 <div class="o_setting_left_pane">
@@ -192,7 +210,7 @@
             <field name="view_id" ref="res_config_settings_view_form"/>
             <field name="view_mode">form</field>
             <field name="target">inline</field>
-            <field name="context">{'module' : 'l10n_co_edi_jorels'}</field>
+            <field name="context">{'module': 'l10n_co_edi_jorels'}</field>
         </record>
 
         <!-- Electronic invoice menu -->
@@ -243,23 +261,5 @@
                   parent="menu_l10n_co_edi_jorels_root"
                   groups="l10n_co_edi_jorels.l10n_co_edi_jorels_group_manager"/>
 
-        <!-- Customer software action-->
-        <record model="ir.actions.act_window" id="action_l10n_co_edi_jorels_customer_software">
-            <field name="name">Customer software</field>
-            <field name="res_model">l10n_co_edi_jorels.customer_software</field>
-            <field name="view_mode">tree,form</field>
-            <field name="help" type="html">
-                <p class="o_view_nocontent_smiling_face">
-                    Create your first customer software!
-                </p>
-            </field>
-        </record>
-
-        <!-- Customer software menu -->
-        <menuitem id="menu_l10n_co_edi_jorels_customer_software"
-                  name="Customer software"
-                  action="action_l10n_co_edi_jorels_customer_software"
-                  parent="menu_l10n_co_edi_jorels_root"
-                  groups="l10n_co_edi_jorels.l10n_co_edi_jorels_group_manager"/>
     </data>
 </odoo>

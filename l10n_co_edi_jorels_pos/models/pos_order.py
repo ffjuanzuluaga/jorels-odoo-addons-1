@@ -1,23 +1,23 @@
 # -*- coding: utf-8 -*-
 #
-#   Jorels S.A.S. - Copyright (C) 2019-2023
+# Jorels S.A.S. - Copyright (2019-2022)
 #
-#   This file is part of l10n_co_edi_jorels_pos.
+# This file is part of l10n_co_edi_jorels_pos.
 #
-#   This program is free software: you can redistribute it and/or modify
-#   it under the terms of the GNU Lesser General Public License as published by
-#   the Free Software Foundation, either version 3 of the License, or
-#   (at your option) any later version.
+# l10n_co_edi_jorels_pos is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 #
-#   This program is distributed in the hope that it will be useful,
-#   but WITHOUT ANY WARRANTY; without even the implied warranty of
-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#   GNU Lesser General Public License for more details.
+# l10n_co_edi_jorels_pos is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
 #
-#   You should have received a copy of the GNU Lesser General Public License
-#   along with this program. If not, see <https://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU Lesser General Public License
+# along with l10n_co_edi_jorels_pos.  If not, see <https://www.gnu.org/licenses/>.
 #
-#   email: info@jorels.com
+# email: info@jorels.com
 #
 
 
@@ -62,6 +62,17 @@ class PosOrder(models.Model):
             journal_id = self.session_id.config_id.invoice_journal_id.id
 
         vals['journal_id'] = journal_id
+
+        if vals['move_type'] == 'out_refund':
+            invoice_search = self.env['account.move'].search([('id', '=', vals['reversed_entry_id'])])
+            if invoice_search[0].amount_total == -self.amount_total:
+                # 2 is to report 'Electronic invoice cancellation' Concept
+                vals['ei_correction_concept_credit_id'] = 2
+                vals['ei_correction_concept_id'] = 2
+            else:
+                # 1 is to report 'Partial return of goods and/or partial non-acceptance of service' Concept
+                vals['ei_correction_concept_credit_id'] = 1
+                vals['ei_correction_concept_id'] = 1
 
         return vals
 
